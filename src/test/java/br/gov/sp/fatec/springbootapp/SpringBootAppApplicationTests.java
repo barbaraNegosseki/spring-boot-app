@@ -7,16 +7,16 @@ import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.test.annotation.Rollback;
+//import org.springframework.transaction.annotation.Transactional;
 import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.repository.AutoriizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
 
 @SpringBootTest
-@Transactional
-@Rollback
+//@Transactional
+//@Rollback
 class SpringBootAppApplicationTests {
 
     @Autowired
@@ -43,7 +43,6 @@ class SpringBootAppApplicationTests {
         assertNotNull(usuario.getAutorizacoes().iterator().next().getId());
     }
     
-
     @Test
     void testaAutorizacao() {
         Usuario usuario = usuarioRepo.findById(1L).get();
