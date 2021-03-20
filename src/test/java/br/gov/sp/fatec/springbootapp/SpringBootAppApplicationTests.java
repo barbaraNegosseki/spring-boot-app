@@ -14,6 +14,7 @@ import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.repository.AutoriizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
+import br.gov.sp.fatec.springbootapp.service.SegurancaService;
 
 @SpringBootTest
 @Transactional
@@ -25,6 +26,9 @@ class SpringBootAppApplicationTests {
 
     @Autowired
     private AutoriizacaoRepository autRepo;
+
+    @Autowired
+    private SegurancaService segService;
 
 	@Test
 	void contextLoads() {
@@ -96,5 +100,31 @@ class SpringBootAppApplicationTests {
     void testaBuscaUsuarioNomeAutorizacao(){
         List<Usuario> usuarios = usuarioRepo.findByAutorizacoesNome("ROLE_ADMIN");
         assertFalse(usuarios.isEmpty());
+    }
+
+    //utilizando queries
+
+    @Test
+    void testaBuscaUsuarioNomeQuery(){
+        Usuario usuario = usuarioRepo.buscaUsuarioPorNome("Barbara");
+        assertNotNull(usuario);
+    }
+
+    @Test
+    void testaBuscaUsuarioNomeSenhaQuery(){
+        Usuario usuario = usuarioRepo.buscaUsuarioPorNomeSenha("Barbara", "pass123");
+        assertNotNull(usuario);
+    }
+
+    @Test
+    void testaBuscaUsuarioNomeAutorizacaoQuery(){
+        List<Usuario> usuarios = usuarioRepo.buscaPorNomeAutorizacao("ROLE_ADMIN");
+        assertFalse(usuarios.isEmpty());
+    }
+
+    @Test
+    void testaServivoCriaUsuario() {
+        Usuario usuario = segService.criarUsuario("Normal", "senha123", "ROLE_USUARIO");
+        assertNotNull(usuario);
     }
 }
