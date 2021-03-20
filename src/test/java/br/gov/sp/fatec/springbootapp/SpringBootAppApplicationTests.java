@@ -4,19 +4,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.annotation.Rollback;
-//import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import br.gov.sp.fatec.springbootapp.entity.Autorizacao;
 import br.gov.sp.fatec.springbootapp.entity.Usuario;
 import br.gov.sp.fatec.springbootapp.repository.AutoriizacaoRepository;
 import br.gov.sp.fatec.springbootapp.repository.UsuarioRepository;
 
 @SpringBootTest
-//@Transactional
-//@Rollback
+@Transactional
+@Rollback
 class SpringBootAppApplicationTests {
 
     @Autowired
@@ -35,12 +36,30 @@ class SpringBootAppApplicationTests {
         usuario.setNome("Usuario");
         usuario.setSenha("senha1");
         usuario.setAutorizacoes(new HashSet<Autorizacao>());
+
         Autorizacao aut = new Autorizacao();
         aut.setNome("ROLE_USUARIO");
         autRepo.save(aut);
         usuario.getAutorizacoes().add(aut);
         usuarioRepo.save(usuario);
         assertNotNull(usuario.getAutorizacoes().iterator().next().getId());
+    }
+
+    @Test
+    void testaInsercaoDeAutorizacao() {
+        Usuario usuario = new Usuario();
+        usuario.setNome("Usuario2");
+        usuario.setSenha("senha1");
+        usuarioRepo.save(usuario);
+
+        Autorizacao aut = new Autorizacao();
+        aut.setNome("ROLE_USUARIO2");
+        aut.setUsuarios(new HashSet<Usuario>());
+        aut.getUsuarios().add(usuario);
+
+        autRepo.save(aut);
+        //usuario.getAutorizacoes().add(aut);
+        assertNotNull(aut.getUsuarios().iterator().next().getId());
     }
     
     @Test
@@ -53,5 +72,29 @@ class SpringBootAppApplicationTests {
     void testaUsuario() {
         Autorizacao aut = autRepo.findById(1L).get();
         assertEquals("Barbara", aut.getUsuarios().iterator().next().getNome());
+    }
+
+    @Test
+    void testaBuscaUsuarioNomeContains(){
+        List<Usuario> usuarios = usuarioRepo.findByNomeContainsIgnoreCase("B");
+        assertFalse(usuarios.isEmpty());
+    }
+
+    @Test
+    void testaBuscaUsuarioNome(){
+        Usuario usuario = usuarioRepo.findByNome("Barbara");
+        assertNotNull(usuario);
+    }
+
+    @Test
+    void testaBuscaUsuarioNomeSenha(){
+        Usuario usuario = usuarioRepo.findByNomeAndSenha("Barbara", "pass123");
+        assertNotNull(usuario);
+    }
+
+    @Test
+    void testaBuscaUsuarioNomeAutorizacao(){
+        List<Usuario> usuarios = usuarioRepo.findByAutorizacoesNome("ROLE_ADMIN");
+        assertFalse(usuarios.isEmpty());
     }
 }
